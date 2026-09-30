@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TXT São Paulo — Simulação de ingressos</title>
+<style>
+:root{
+  --bg:#f4f6fa;--card:#fff;--ink:#10131a;--muted:#697386;--line:#e5e8ee;
+  --pink:#ff4f8b;--purple:#7657ff;--blue:#3d8bfd;--green:#27b67a;
+  --orange:#ff9d3d;--yellow:#ffd447;--danger:#ed5b63;
+}
+*{box-sizing:border-box} body{margin:0;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink)}
+button,input{font:inherit} button{cursor:pointer;border:0}
+.top{background:#11131a;color:#fff;text-align:center;padding:7px 12px;font-size:12px;font-weight:800;letter-spacing:.2px}
+.nav{height:68px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 6%;position:sticky;top:0;z-index:10}
+.logo{font-weight:950;font-size:21px;letter-spacing:-1px}.logo span{color:var(--pink)}
+.nav small{color:var(--muted)}
+.wrap{max-width:1120px;margin:auto;padding:25px 18px 60px}
+.crumb{font-size:13px;color:var(--muted);margin-bottom:18px}
+.hero{background:linear-gradient(120deg,#151725,#33304f);color:#fff;border-radius:22px;padding:30px;display:grid;grid-template-columns:1.6fr 1fr;gap:25px;overflow:hidden;position:relative}
+.hero:after{content:"";position:absolute;width:260px;height:260px;border-radius:50%;right:-70px;top:-100px;background:rgba(255,79,139,.22)}
+.badge{display:inline-block;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);padding:7px 10px;border-radius:999px;font-size:11px;font-weight:900;letter-spacing:.5px}
+h1{font-size:40px;line-height:1.02;margin:16px 0 10px;letter-spacing:-1.7px}.hero p{color:#d7d9e2;margin:8px 0}.hero-art{min-height:180px;border-radius:18px;background:linear-gradient(145deg,#ff4f8b,#7657ff);display:flex;align-items:flex-end;padding:20px;font-weight:950;font-size:26px;position:relative;overflow:hidden}.hero-art:before,.hero-art:after{content:"";position:absolute;border-radius:50%;background:rgba(255,255,255,.18)}.hero-art:before{width:180px;height:180px;right:-40px;top:-45px}.hero-art:after{width:90px;height:90px;left:25px;top:25px}
+.grid{display:grid;grid-template-columns:1.5fr .7fr;gap:18px;margin-top:18px}.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:0 8px 30px rgba(20,25,40,.04)}
+.section-title{font-size:17px;font-weight:950;margin-bottom:15px}.meta{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.meta div{background:#f7f8fb;border-radius:12px;padding:12px}.meta b{display:block;font-size:13px}.meta span{font-size:12px;color:var(--muted)}
+.queue{display:none}.queue.active{display:block}.bar{height:10px;background:#eceef4;border-radius:99px;overflow:hidden;margin:15px 0}.bar i{display:block;height:100%;width:38%;background:linear-gradient(90deg,var(--purple),var(--pink));border-radius:99px;transition:width 1s}
+.queue-num{font-size:38px;font-weight:950;letter-spacing:-1px}.queue-note{color:var(--muted);font-size:13px}
+.seat-page{display:none}.seat-page.active{display:block}.map{position:relative;height:500px;background:#f7f8fb;border:1px solid var(--line);border-radius:18px;overflow:hidden;padding:20px}
+.stage{height:58px;background:#181b24;color:#fff;border-radius:0 0 35px 35px;display:flex;align-items:center;justify-content:center;font-weight:950;letter-spacing:1px;margin:0 18% 18px}
+.field{position:absolute;left:34%;right:34%;top:115px;bottom:65px;border:3px solid #dddff0;border-radius:45%;background:#fff}
+.sector{position:absolute;border:2px solid rgba(0,0,0,.12);display:flex;align-items:center;justify-content:center;text-align:center;font-weight:950;font-size:12px;transition:.15s;user-select:none}
+.sector:hover{filter:brightness(.97);transform:scale(1.015)}.s1{left:6%;right:6%;top:88px;height:65px;background:#ffe58a;border-radius:30px}.s2{left:9%;width:25%;top:170px;height:115px;background:#ff9cc1;border-radius:30px}.s3{right:9%;width:25%;top:170px;height:115px;background:#9fc9ff;border-radius:30px}.s4{left:9%;width:25%;top:310px;height:115px;background:#9ee8c8;border-radius:30px}.s5{right:9%;width:25%;top:310px;height:115px;background:#c6b8ff;border-radius:30px}.s6{left:35%;right:35%;bottom:18px;height:55px;background:#ffc17c;border-radius:20px}.vip{position:absolute;left:43%;right:43%;top:145px;height:55px;background:#fff3a8;border:2px dashed #d2ae22;border-radius:15px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:950;z-index:2}
+.legend{display:flex;gap:7px;flex-wrap:wrap;margin-top:14px}.legend span{font-size:11px;padding:6px 8px;border-radius:8px;background:#f5f6f9}
+.side h3{margin-top:0}.price{font-size:27px;font-weight:950}.muted{color:var(--muted);font-size:12px}.select{width:100%;padding:13px;border-radius:12px;background:#11131a;color:#fff;font-weight:900;margin-top:13px}.select:disabled{opacity:.45;cursor:not-allowed}
+.selected{margin-top:14px;padding:12px;background:#f7f8fb;border-radius:12px;font-size:13px}.timer{font-weight:900;color:var(--danger);font-size:13px}
+.checkout{display:none}.checkout.active{display:block}.steps{display:flex;gap:8px;margin-bottom:20px}.step{flex:1;text-align:center;padding:9px;background:#eef0f5;border-radius:9px;font-size:11px;font-weight:900}.step.on{background:#11131a;color:#fff}.form{display:grid;gap:10px;max-width:600px}.form input{border:1px solid var(--line);padding:13px;border-radius:11px;outline:none}.form input:focus{border-color:#7657ff}.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.final{display:none;text-align:center}.final.active{display:block}.ticket{max-width:430px;margin:20px auto;background:#fff;border:1px solid #ddd;border-radius:20px;overflow:hidden;text-align:left;box-shadow:0 15px 40px rgba(0,0,0,.08)}.ticket-head{background:#11131a;color:#fff;padding:20px}.ticket-body{padding:20px}.qr{width:125px;height:125px;margin:15px auto;background:repeating-linear-gradient(90deg,#111 0 4px,#fff 4px 8px),repeating-linear-gradient(0deg,transparent 0 7px,rgba(0,0,0,.6) 7px 10px);border:10px solid #fff;box-shadow:0 0 0 1px #ddd}.ticket-line{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px dashed #ddd;font-size:13px}.warn{font-size:11px;color:#8a5a00;background:#fff5d6;border-radius:10px;padding:9px;margin-top:12px}
+@media(max-width:760px){.nav{padding:0 18px}.hero{grid-template-columns:1fr;padding:22px}h1{font-size:32px}.hero-art{min-height:100px}.grid{grid-template-columns:1fr}.meta{grid-template-columns:1fr}.map{height:470px}.s1{left:4%;right:4%}.s2,.s3,.s4,.s5{width:28%}.s2,.s4{left:5%}.s3,.s5{right:5%}.field{left:33%;right:33%}.vip{left:38%;right:38%}}
+</style>
+</head>
+<body>
+<div class="top">SIMULAÇÃO • FAN-MADE • NÃO É O SITE OFICIAL E NÃO REALIZA COMPRAS</div>
+<nav class="nav"><div class="logo">ticket<span>•</span>sim</div><small>Central de ingressos</small></nav>
+
+<main class="wrap">
+<div class="crumb">Eventos › São Paulo › K-pop</div>
+
+<section class="hero">
+<div>
+<span class="badge">SIMULAÇÃO INTERATIVA</span>
+<h1>TXT — TOMORROW X TOGETHER</h1>
+<p><b>São Paulo, SP</b> • Nubank Parque</p>
+<p>Evento fictício criado para simular a experiência de compra de ingresso.</p>
+</div>
+<div class="hero-art">TXT<br>LIVE IN SÃO PAULO</div>
+</section>
+
+<div id="queue" class="card queue active" style="margin-top:18px">
+<div class="section-title">Você está na fila virtual</div>
+<div class="queue-num" id="qnum">12.846</div>
+<div class="queue-note">A fila está avançando. Esta é uma simulação — nenhum ingresso está sendo vendido.</div>
+<div class="bar"><i id="qbar"></i></div>
+<div class="queue-note">Tempo estimado: <b id="qtime">04:18</b></div>
+<button class="select" onclick="enter()">ENTRAR NA VENDA</button>
+</div>
+
+<div id="seats" class="seat-page">
+<div class="grid">
+<div class="card">
+<div class="section-title">Escolha seu setor</div>
+<div class="map">
+<div class="stage">PALCO</div>
+<div class="sector s1" onclick="pick('VIP Soundcheck',1200)">VIP SOUNDCHECK<br>R$ 1.200</div>
+<div class="vip" onclick="pick('Pista Premium',980)">PISTA<br>PREMIUM</div>
+<div class="sector s2" onclick="pick('Arquibancada Leste',540)">ARQUIBANCADA<br>LESTE</div>
+<div class="sector s3" onclick="pick('Pista Premium',980)">PISTA PREMIUM<br>R$ 980</div>
+<div class="sector s4" onclick="pick('Arquibancada Oeste',320)">ARQUIBANCADA<br>OESTE</div>
+<div class="sector s5" onclick="pick('Gramado / Lateral',420)">GRAMADO /<br>LATERAL</div>
+<div class="sector s6" onclick="pick('Pista',620)">PISTA<br>R$ 620</div>
+</div>
+<div class="legend">
+<span>🟨 VIP</span><span>🩷 Premium</span><span>🟦 Leste</span><span>🟩 Oeste</span><span>🟪 Gramado</span><span>🟧 Pista</span>
+</div>
+</div>
+<aside class="card side">
+<h3>Seu ingresso</h3>
+<div class="muted">Evento</div><b>TXT — São Paulo</b><br><br>
+<div class="muted">Data</div><b>Data fictícia</b><br><br>
+<div class="muted">Reserva expira em</div><div class="timer" id="timer">09:59</div>
+<div class="selected" id="chosen">Selecione um setor no mapa.</div>
+<div class="price" id="price">R$ 0,00</div>
+<button class="select" id="go" disabled onclick="checkout()">CONTINUAR</button>
+</aside>
+</div>
+</div>
+
+<div id="checkout" class="card checkout" style="margin-top:18px">
+<div class="steps"><div class="step on">1 • Ingresso</div><div class="step on">2 • Dados fictícios</div><div class="step">3 • Confirmação</div></div>
+<div class="section-title">Finalizar reserva — SIMULAÇÃO</div>
+<p class="muted">Não coloque dados reais. Este formulário não envia nem processa pagamentos.</p>
+<div class="form">
+<input placeholder="Nome para o ingresso (ex.: Maria)" id="name">
+<input placeholder="E-mail fictício">
+<div class="row"><input placeholder="0000 0000 0000 0000"><input placeholder="MM/AA"></div>
+<button class="select" onclick="finish()">CONFIRMAR RESERVA FICTÍCIA</button>
+</div>
+</div>
+
+<div id="final" class="card final" style="margin-top:18px">
+<h2>🎉 Ingresso reservado!</h2>
+<p class="muted">Esta tela é totalmente fictícia e não garante entrada em nenhum evento.</p>
+<div class="ticket">
+<div class="ticket-head"><b>TXT — TOMORROW X TOGETHER</b><br><small>Nubank Parque • São Paulo</small></div>
+<div class="ticket-body">
+<div class="ticket-line"><span>Nome</span><b id="tname">Convidado</b></div>
+<div class="ticket-line"><span>Setor</span><b id="tsector">—</b></div>
+<div class="ticket-line"><span>Tipo</span><b>Ingresso digital</b></div>
+<div class="qr"></div>
+<div class="warn">QR Code demonstrativo. Não é válido para acesso ao evento.</div>
+</div></div>
+<button class="select" onclick="location.reload()">RECOMEÇAR SIMULAÇÃO</button>
+</div>
+</main>
+
+<script>
+let chosen=null, seconds=599, q=12846;
+function enter(){
+ document.getElementById('queue').classList.remove('active');
+ document.getElementById('seats').classList.add('active');
+}
+function pick(name,price){
+ chosen={name,price};
+ document.getElementById('chosen').innerHTML='<b>'+name+'</b><br><span class="muted">1 ingresso • taxa fictícia incluída</span>';
+ document.getElementById('price').textContent='R$ '+price.toLocaleString('pt-BR',{minimumFractionDigits:2});
+ document.getElementById('go').disabled=false;
+}
+function checkout(){
+ if(!chosen)return;
+ document.getElementById('checkout').classList.add('active');
+ document.getElementById('checkout').scrollIntoView({behavior:'smooth'});
+}
+function finish(){
+ document.getElementById('tname').textContent=document.getElementById('name').value||'Convidado';
+ document.getElementById('tsector').textContent=chosen?chosen.name:'—';
+ document.getElementById('final').classList.add('active');
+ document.getElementById('final').scrollIntoView({behavior:'smooth'});
+}
+setInterval(()=>{
+ q=Math.max(1,q-Math.floor(Math.random()*83+20));
+ document.getElementById('qnum').textContent=q.toLocaleString('pt-BR');
+},1500);
+setInterval(()=>{
+ seconds=Math.max(0,seconds-1);
+ let m=String(Math.floor(seconds/60)).padStart(2,'0'),s=String(seconds%60).padStart(2,'0');
+ document.getElementById('timer').textContent=m+':'+s;
+},1000);
+</script>
+</body>
+</html>
